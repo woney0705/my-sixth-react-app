@@ -1,47 +1,55 @@
-import Button from '../components/Button'
-import Product from '../components/Product'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { submitOrder } from '../api/order'
+import { useAuth } from '../store/authStore'
 
 
 export default function Order() {
-     const [products, setProducts] = useState([]);
-     const [qty, setQty] = useState({}); 
-   
-    const increment = id => {
-        setQty(prev => ({...prev, [id]:prev[id]+1}));
-        
-    };
+    const location = useLocation()
+    const navigate = useNavigate()
+    const { user } = useAuth()
+    const initialProducts = (location.state && location.state.products) || []
+    const [products, setProducts] = useState(
+        initialProducts.map((p) => ({ ...p, qty: 1 }))
+    )
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
 
-    const decrement = id => {
-        setQty(prev => ({...prev, [id]:Math.max(prev[id]-1, 1)}));
-    };
-
-    useEffect(() => {
-       fetch("https://us-central1-goorm-shop-api.cloudfunctions.net/api/api/products", {
-            method: "GET",
-            headers: {"Content-Type":"application/json"}
-        })
-        .then(response  => response.json())
-        .then(data => {
-            setProducts(data);
-
-            const initialCounts = data.reduce((acc, p) => ({...acc, [p.id]: 1}), {});
-            setQty(initialCounts);
-        })
-        .catch(err => console.error(err));
-
-    }, []);
-
-    const handleOrder = (e) => {
-        e.preventDefault()
-        const selectedProducts = products.filter((p) => selected.includes(p.id))
-        Navigate('/order', { state: { products: selectedProducts}})
+    const increaseQty = (idx) => {
+        setProducts((prev) =>
+            prev.map((p, i) => (i === idx ? { ...p, qty: p.qty+ 1} : p))
+        )
     }
 
+    const decreaseQty = (idx) => {
+        setProducts((prev) => 
+            prev.map((p,i) => (i === idx && p.qty > 1 ? {...p, qty: p.qty-1}: p))
+        )
+    }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("주문완료");
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+        setError(null)
+        try {
+            await submitOrder({
+                items: products.map((p) => ({
+                    productId: p.id,
+                    quantity: p.qty
+                })),
+                token: user.idToken,
+            })
+            alert('주문이 완료되었습니다!')
+            navigate('/')
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    if(!products.length) {
+        return <div className="text-center py-12">주문할 상품이 없습니다.</div>
     }
 
     return (
@@ -50,22 +58,29 @@ export default function Order() {
                 <h1 className="text-3xl font-bold mb-8">주문하기</h1>
                 <form onSubmit={handleSubmit}>
                 <div className="space-y-6">
-                    {products.map((product) => (
-                        <Product 
-                            key={product.id} 
-                            id={product.id}
-                            product={product} 
-                            qty={qty[product.id] ?? 1}
-                            onIncrement={() => increment(product.id)} 
-                            onDecrement={() => decrement(product.id)}
-                            onChangeQty={value => setQty(prev => ({ ...prev, [product.id]: value } ))}    
-                        />
+                    {products.map((product, idx) => (
+                    <div key={product.id} className="card bg-base-200 shadow p-4">
+                        <div className="flex justify-between items-center">
+                        <div>
+                            <h2 className="text-lg font-semibold">{product.name}</h2>
+                            <p className="text-sm text-gray-500">₩{product.price?.toLocaleString()}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button type="button" className="btn btn-sm" onClick={() => decreaseQty(idx)}>-</button>
+                            <input type="number" value={product.qty} min="1" readOnly className="input input-bordered input-sm w-16 text-center" />
+                            <button type="button" className="btn btn-sm" onClick={() => increaseQty(idx)}>+</button>
+                        </div>
+                        </div>
+                    </div>
                     ))}
 
                     <div className="text-right">
-                        <Button className="btn-primary">주문 완료</Button>
+                        <button type="submit" className="btn btn-primary" disabled={loading}>
+                            {loading ? '주문 처리 중...' : '주문 완료'}
+                        </button>
+                        </div>
+                        {error && <div className="text-red-500 text-center mt-4">{error}</div>}
                     </div>
-                </div>
                 </form>
             </section>
         </main>

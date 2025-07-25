@@ -3,16 +3,23 @@ import Button from '../components/Button'
 import Product from '../components/Product'
 import { useState } from 'react'
 import { useProducts } from '../hooks/useProducts'
-
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
     const { products, loading, error } = useProducts()
     const [selected, setSelected] = useState([])
+    const navigate = useNavigate()
   
     const handleChange = (id) => {
         setSelected((prev) =>
             prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id] 
         )
+    }
+
+    const handleOrder = (e) => {
+        e.preventDefault()
+        const selectedProducts = products.filter((p) => selected.includes(p.id))
+        navigate('/order', { state: { products: selectedProducts } })
     }
 
     if (loading) return <div className="text-center py-12">로딩 중...</div>
@@ -22,7 +29,7 @@ export default function Home() {
         <main className="flex-1">
             <section className="container mx-auto px-4 py-12">
                 <h1 className="text-3xl font-bold mb-8">상품 목록</h1>
-                <form action='/order'>
+                <form onSubmit={handleOrder}>
                     <div className="grid md:grid-cols-3 gap-6">
                         {products.map((product) => (
                             <Product 
