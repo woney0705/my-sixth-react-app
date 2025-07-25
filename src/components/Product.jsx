@@ -1,31 +1,29 @@
-import Button from './Button'
 import Input from './Input'
 
 
-export default function Product({id, qty, onIncrement, onDecrement, onChangeQty, product}) {
+export default function Product({product, checked, onChange}) {
 
     return (
-        <div className="card bg-base-200 shadow p-4">
-            <div className="flex justify-between items-center">
-            <div>
-                <h2 className="text-lg font-semibold">{product.name}</h2>
-                <p className="text-sm text-gray-500">{"₩"+Number(product.price).toLocaleString()}</p>
-            </div>
-            <div className="flex items-center gap-2">
-                <Button type="button" className="btn-sm" onClick={onDecrement}>-</Button>
-                <Input 
-                    type="number"
-                    min={1}
-                    value={qty}
-                    className="input-sm w-16 text-center"
-                    onChange={e => {
-                        onChangeQty(Number(e.target.value));
-                    }}
-                    id={id} 
+        <label className="card shadow-lg bordered cursor-pointer">
+            <Input 
+                type="checkbox"
+                name="products"
+                value={product.id}
+                className="checkbox absolute top-4 left-4"
+                checked={checked}
+                onChange={onChange}
+            />
+            <figure>
+                <img
+                    src={product.imageUrl || 'https://via.placeholder.com/300'}
+                    alt={product.name}
+                    className="object-cover h-48 w-full"
                 />
-                <Button type="button" className="btn-sm" onClick={onIncrement}>+</Button>
+            </figure>
+            <div className="card-body">
+                <h2 className="card-title">{product.name}</h2>
+                <p>₩{product.price?.toLocaleString() ?? '0'}</p>
             </div>
-            </div>
-        </div>
+        </label>
     );
 }
