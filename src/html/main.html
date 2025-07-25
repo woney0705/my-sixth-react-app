@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goorm Shop - 회원가입</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.3/dist/full.min.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body class="flex flex-col min-h-screen bg-base-100">
+    <!-- ✅ HEADER -->
+    <header class="navbar bg-base-100 shadow sticky top-0 z-50">
+      <div class="container mx-auto px-4 flex justify-between items-center w-full">
+        <a href="index.html" class="text-2xl font-bold text-primary">goorm shop</a>
+        <div class="flex gap-2">
+          <a href="login.html" class="btn btn-outline btn-sm">로그인</a>
+          <a href="signup.html" class="btn btn-outline btn-sm">회원가입</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ✅ SIGNUP PAGE -->
+    <main class="flex-1 flex items-center justify-center">
+      <div class="w-full max-w-sm p-6 card bg-base-200 shadow">
+        <h1 class="text-2xl font-bold mb-6 text-center">회원가입</h1>
+        <form onsubmit="handleSignup(event)" class="space-y-4">
+          <div>
+            <label class="label">
+              <span class="label-text">이름</span>
+            </label>
+            <input type="text" name="name" class="input input-bordered w-full" required />
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text">이메일</span>
+            </label>
+            <input type="email" name="email" class="input input-bordered w-full" required />
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text">비밀번호</span>
+            </label>
+            <input type="password" name="password" class="input input-bordered w-full" required />
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary w-full">회원가입</button>
+          </div>
+        </form>
+        <p class="mt-4 text-sm text-center">
+          이미 계정이 있으신가요?
+          <a href="login.html" class="link link-primary">로그인</a>
+        </p>
+      </div>
+    </main>
+
+    <!-- ✅ FOOTER -->
+    <footer class="footer footer-center p-6 bg-base-200 text-base-content mt-auto">
+      <div>
+        <p>© 2025 Goorm Shop. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      function handleSignup(event) {
+        event.preventDefault();
+        alert("회원가입이 완료되었습니다!");
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>
