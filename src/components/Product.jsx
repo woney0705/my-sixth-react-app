@@ -2,14 +2,14 @@ import Button from './Button'
 import Input from './Input'
 
 
-export default function Product({id, name, price, qty, onIncrement, onDecrement, onChangeQty}) {
+export default function Product({id, qty, onIncrement, onDecrement, onChangeQty, product}) {
 
     return (
         <div className="card bg-base-200 shadow p-4">
             <div className="flex justify-between items-center">
             <div>
-                <h2 className="text-lg font-semibold">{name}</h2>
-                <p className="text-sm text-gray-500">{"₩"+Number(price).toLocaleString()}</p>
+                <h2 className="text-lg font-semibold">{product.name}</h2>
+                <p className="text-sm text-gray-500">{"₩"+Number(product.price).toLocaleString()}</p>
             </div>
             <div className="flex items-center gap-2">
                 <Button type="button" className="btn-sm" onClick={onDecrement}>-</Button>

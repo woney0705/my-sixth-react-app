@@ -6,7 +6,7 @@ export default function FormInput({props}) {
             <label htmlFor={props.name} className="label">
             <span className="label-text">{props.labelText}</span>
             </label>
-            <Input props={props}/>
+            <Input {...props}/>
         </div>
     );
 }

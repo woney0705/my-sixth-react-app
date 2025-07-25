@@ -6,34 +6,23 @@ import { useSignup } from '../hooks/useSignup'
 
 
 export default function Signup() {
+    const navigate = useNavigate()
+    const { handleSignup, loading, error, success } = useSignup()
     const [form, setForm] = useState({name:"", password: "", email: ""});
 
-    async function handleSignup(e) {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        
-        const response = await fetch("https://us-central1-goorm-shop-api.cloudfunctions.net/api/api/signup", {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(form)
-        });
-//        .then((response)  => response.json())
- //       .then(data => {
-            
- //           if(!data.ok) {
- //               alert("회원가입이 완료되었습니다.");
- //           } 
+        await handleSignup(form)
+    }
 
-            
- //       })
- //       .catch(err => console.error(err));
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}))
-            throw new Error(errorData.message || '회원가입에 실패했습니다.')
-        }
+    if (success) {
+        alert('회원가입이 완료되었습니다!')
+        navigate('/login')
+        return null
     }
 
     const handleChange = (e) => {
+        console.log("12");
         setForm({...form, [e.target.name]: e.target.value});
     }
 
@@ -65,14 +54,17 @@ export default function Signup() {
         <main className="flex-1 flex items-center justify-center">
             <div className="w-full max-w-sm p-6 card bg-base-200 shadow">
                 <h1 className="text-2xl font-bold mb-6 text-center">회원가입</h1>
-                <form onSubmit={handleSignup} className="space-y-4">
-                <FormInput props={nameInputProps} /> 
-                <FormInput props={emailInputProps} /> 
-                <FormInput props={passwordInputProps} /> 
-                <div className="text-center">
-                    <Button type="submit" className="btn-primary w-full">회원 가입</Button>
-                </div>
+                <form onSubmit={onSubmit} className="space-y-4">
+                    <FormInput props={nameInputProps} /> 
+                    <FormInput props={emailInputProps} /> 
+                    <FormInput props={passwordInputProps} /> 
+                    <div className="text-center">
+                        <Button type="submit" className="btn-primary w-full" disabled={loading}>
+                            {loading ? '회원가입 중...' : '회원 가입'}    
+                        </Button>
+                    </div>
                 </form>
+                {error && <p className="mt-4 text-sm text-center text-red-500">{error}</p>}
                 <p className="mt-4 text-sm text-center">
                 이미 계정이 있으신가요?
                 <Link to="/login" className="link link-primary">로그인</Link>
