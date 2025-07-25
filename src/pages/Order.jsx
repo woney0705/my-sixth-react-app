@@ -32,6 +32,13 @@ export default function Order() {
 
     }, []);
 
+    const handleOrder = (e) => {
+        e.preventDefault()
+        const selectedProducts = products.filter((p) => selected.includes(p.id))
+        Navigate('/order', { state: { products: selectedProducts}})
+    }
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("주문완료");

@@ -22,7 +22,6 @@ export default function Signup() {
     }
 
     const handleChange = (e) => {
-        console.log("12");
         setForm({...form, [e.target.name]: e.target.value});
     }
 

@@ -8,13 +8,13 @@ import { useProducts } from '../hooks/useProducts'
 export default function Home() {
     const { products, loading, error } = useProducts()
     const [selected, setSelected] = useState([])
-    
+  
     const handleChange = (id) => {
         setSelected((prev) =>
             prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id] 
         )
     }
-    
+
     if (loading) return <div className="text-center py-12">로딩 중...</div>
     if (error) return <div className="text-center py-12 text-ref-500">{error}</div>
 

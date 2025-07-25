@@ -1,5 +1,4 @@
 export default function Input(props) {
-    console.log(props);
     return (
        <input id={props.id}   
             type={props.type} 
