@@ -6,6 +6,7 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Order from './pages/Order.jsx'
 import { AuthProvider } from './store/authStore.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 function App() {
   return (
@@ -17,7 +18,11 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
-            <Route path='/order' element={<Order />} />
+            <Route path='/order' element={
+              <ProtectedRoute>
+                <Order />
+              </ProtectedRoute>
+              } />
           </Routes>
           <Footer />
         </Router>  
